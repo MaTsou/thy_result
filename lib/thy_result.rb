@@ -48,7 +48,7 @@ class ThyResult
     when Symbol, String
       Object.const_defined?( klass ) ?
         Object.const_get( klass ) :
-        Object.const_set( klass, Class.new( self ) )
+        Object.const_set( klass, Class.new( ThyResult ) )
     when self.class
       klass
     end
