@@ -2,8 +2,9 @@
 
 This tiny gem is largely inspired by dry-monad and what I understood of it (and I know I am far from understanding what is a monad).
 
-TheResult provide a way to wrap anything a method could returned. The wrapper 
+ThyResult provide a way to wrap anything a method could returned. The wrapper 
 is carrying information about what is the content ( Success, Failure, ... ). 
+ThyResult provide an easy way to define result types.
 See examples below.
 
 ## Installation
@@ -18,13 +19,14 @@ gem 'thy_result', git: 'https://github.com/MaTsou/thy_result.git'
 ## Usage
 Here an example on a subscription process
 ```
+# subscription provider service
 def check_subscription( *args )
   # some code here
   return ThyResult.set( :Granted, account_id ) if condition
   # further checks
   return ThyResult.set( :Denied, issue_msg ) if condition
   # etc
-  return ThyResult.set( :Incomplete, ... )
+  return ThyResult.set( :MissingPlan, -> (back_url) { subscription_url( back_url ) } )
 end
 ```
 
@@ -33,7 +35,7 @@ def typically_a_rails_controller_method
   check_subscription( ... ) do |access|
     access.isGranted { |id| redirect_to :home_page( account_id: id ) }
     access.isDenied { |msg| redirect_to :login_page, alert: msg }
-    access.isIncomplete { |state| ... }
+    access.isMissingPlan { |gate_page| redirect_to gate_page.call( back_from_checkout_url ), allow_other_host: true }
   end
 end
 ```
