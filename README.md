@@ -33,10 +33,26 @@ end
 ```
 def typically_a_rails_controller_method
   check_subscription( ... ) do |access|
-    access.isGranted { |id| redirect_to :home_page( account_id: id ) }
-    access.isDenied { |msg| redirect_to :login_page, alert: msg }
+    access.isGranted { |id| redirect_to :home_path( account_id: id ) }
+    access.isDenied { |msg| redirect_to :login_path, alert: msg }
     access.isMissingPlan { |gate_page| redirect_to gate_page.call( back_from_checkout_url ), allow_other_host: true }
   end
+end
+```
+
+### alternative syntax
+`access.isGranted { }` equiv. `access.is( Granted ) { }` equiv. `access.is( 
+:Granted ) { }`
+
+```
+# Test ThyResult class. Get content with call method.
+case access = check_subscription( ... )
+  when Granted
+    redirect_to :home_path( account_id: access.call )
+  when Denied
+    redirect_to :login_path, alert: access.call
+  when MissingPlan
+    redirect_to access.call( back_from_checkout_url ), allow_other_host: true
 end
 ```
 
