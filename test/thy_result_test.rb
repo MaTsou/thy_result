@@ -25,6 +25,8 @@ describe ThyResult do
           "hello #{result.call}"
         when MissingBudget
           "tested last : #{result.call}"
+        else
+          "nothing there"
         end
       ).must_equal "tested last : 1"
     end
